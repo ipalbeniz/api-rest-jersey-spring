@@ -1,5 +1,7 @@
 package com.barcelo.api.rest.demo.error;
 
+import com.barcelo.api.rest.demo.model.ApiErrorMessage;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -10,29 +12,32 @@ import java.io.StringWriter;
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Override
-    public Response toResponse(Throwable ex) {
+    public Response toResponse(Throwable exception) {
 
-        ApiErrorMessage errorMessage = new ApiErrorMessage();
+        ApiErrorMessage errorMessage = ApiErrorMessage.valueOf(ApiError.GENERIC_ERROR);
 
-        setHttpStatus(ex, errorMessage);
-        errorMessage.setCode(AppException.ApiError.GENERIC_ERROR.getCode());
-        errorMessage.setMessage(AppException.ApiError.GENERIC_ERROR.getMessage());
-
-        StringWriter errorStackTrace = new StringWriter();
-        ex.printStackTrace(new PrintWriter(errorStackTrace));
-        errorMessage.setDeveloperMessage(errorStackTrace.toString());
-
+        setHttpStatus(exception, errorMessage);
+        setDeveloperMessage(exception, errorMessage);
+        
         return Response.status(errorMessage.getStatus())
                 .entity(errorMessage)
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
 
+    private void setDeveloperMessage(Throwable exception, ApiErrorMessage errorMessage) {
+        
+        StringWriter errorStackTrace = new StringWriter();
+        
+        exception.printStackTrace(new PrintWriter(errorStackTrace));
+        
+        errorMessage.setDeveloperMessage(errorStackTrace.toString());
+    }
+
     private void setHttpStatus(Throwable ex, ApiErrorMessage errorMessage) {
+        
         if (ex instanceof WebApplicationException) {
             errorMessage.setStatus(((WebApplicationException) ex).getResponse().getStatus());
-        } else {
-            errorMessage.setStatus(AppException.ApiError.GENERIC_ERROR.getHttpStatus().getStatusCode());
         }
     }
 }

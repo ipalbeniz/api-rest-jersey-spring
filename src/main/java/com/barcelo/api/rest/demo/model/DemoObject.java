@@ -1,9 +1,13 @@
 package com.barcelo.api.rest.demo.model;
 
 
+import javax.validation.constraints.NotNull;
+
 public class DemoObject {
 
+    @NotNull
     private Integer id;
+    
     private String name;
 
     public String getName() {

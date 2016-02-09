@@ -1,4 +1,6 @@
-package com.barcelo.api.rest.demo.error;
+package com.barcelo.api.rest.demo.model;
+
+import com.barcelo.api.rest.demo.error.ApiError;
 
 public class ApiErrorMessage {
 
@@ -21,6 +23,17 @@ public class ApiErrorMessage {
      * extra information that might useful for developers
      */
     private String developerMessage;
+    
+    public static ApiErrorMessage valueOf(ApiError apiError) {
+        ApiErrorMessage errorMessage = new ApiErrorMessage();
+
+        errorMessage.setCode(apiError.getCode());
+        errorMessage.setMessage(apiError.getMessage());
+        errorMessage.setDeveloperMessage(apiError.getDeveloperMessage());
+        errorMessage.setStatus(apiError.getHttpStatus().getStatusCode());
+        
+        return errorMessage;
+    }
 
     public int getStatus() {
         return status;
