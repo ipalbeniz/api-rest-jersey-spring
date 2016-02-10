@@ -6,6 +6,7 @@ import org.hibernate.validator.internal.engine.DefaultParameterNameProvider;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -19,11 +20,8 @@ import java.util.List;
  *     instead of the default ones ({@code arg0, arg1, ..})</li>
  * </ul>
  */
+@Provider
 public class ValidationConfigurationContextResolver implements ContextResolver<ValidationConfig> {
-
-    public ValidationConfigurationContextResolver() {
-        System.out.println("boom!");
-    }
     
     /**
      * Get context method.

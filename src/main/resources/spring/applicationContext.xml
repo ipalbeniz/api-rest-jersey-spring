@@ -10,7 +10,5 @@
 		http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="com.barcelo.api.rest.demo" />
-    
-    <import resource="classpath:*auth0-security-context.xml" />
 
 </beans>

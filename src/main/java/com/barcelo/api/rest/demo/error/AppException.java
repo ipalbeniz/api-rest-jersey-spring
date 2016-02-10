@@ -2,21 +2,21 @@ package com.barcelo.api.rest.demo.error;
 
 public class AppException extends Exception {
     
-    private ApiError apiError;
+    private ApiErrorCatalog apiErrorCatalog;
 
-    public AppException(ApiError apiError) {
+    public AppException(ApiErrorCatalog apiErrorCatalog) {
 
-        super(apiError.getMessage());
-        this.apiError = apiError;
+        super(apiErrorCatalog.getMessage());
+        this.apiErrorCatalog = apiErrorCatalog;
     }
 
-    public AppException(ApiError apiError, Throwable cause) {
+    public AppException(ApiErrorCatalog apiErrorCatalog, Throwable cause) {
 
-        super(apiError.getMessage(), cause);
-        this.apiError = apiError;
+        super(apiErrorCatalog.getMessage(), cause);
+        this.apiErrorCatalog = apiErrorCatalog;
     }
 
-    public ApiError getApiError() {
-        return this.apiError;
+    public ApiErrorCatalog getApiErrorCatalog() {
+        return this.apiErrorCatalog;
     }
 }

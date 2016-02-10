@@ -1,20 +1,22 @@
 package com.barcelo.api.rest.demo.error;
 
-import com.barcelo.api.rest.demo.model.ApiErrorMessage;
+import com.barcelo.api.rest.demo.model.error.ApiErrorMessage;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+@Provider
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Override
     public Response toResponse(Throwable exception) {
 
-        ApiErrorMessage errorMessage = ApiErrorMessage.valueOf(ApiError.GENERIC_ERROR);
+        ApiErrorMessage errorMessage = ApiErrorMessage.valueOf(ApiErrorCatalog.GENERIC_ERROR);
 
         setHttpStatus(exception, errorMessage);
         setDeveloperMessage(exception, errorMessage);

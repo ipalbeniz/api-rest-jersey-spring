@@ -1,13 +1,19 @@
 package com.barcelo.api.rest.demo.model;
 
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 public class DemoObject {
 
     @NotNull
+    @Max(20)
     private Integer id;
-    
+
+    @NotNull
+    @Length(min=1, max=20)
     private String name;
 
     public String getName() {

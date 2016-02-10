@@ -1,13 +1,15 @@
 package com.barcelo.api.rest.demo.resource;
 
-import com.barcelo.api.rest.demo.error.ApiError;
+import com.barcelo.api.rest.demo.error.ApiErrorCatalog;
 import com.barcelo.api.rest.demo.error.AppException;
 import com.barcelo.api.rest.demo.model.DemoObject;
 import com.barcelo.api.rest.demo.service.DemoService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -23,12 +25,12 @@ public class DemoResource {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDemoObject(@PathParam("id") Integer id, @QueryParam("exception") @NotNull String exception) throws AppException {
+    public Response getDemoObject(@Max(5) @PathParam("id") Integer id, @NotNull @QueryParam("param") String param) throws AppException {
 
-        if ("unchecked".equals(exception)) {
+        if (StringUtils.equals(param, "unchecked")) {
             throw new NullPointerException("Unchecked error");
-        } else if ("checked".equals(exception)) {
-            throw new AppException(ApiError.INTEGRATION_ERROR);
+        } else if (StringUtils.equals(param, "checked")) {
+            throw new AppException(ApiErrorCatalog.DEMO_BUSINESS_ERROR);
         }
 
         DemoObject demoObject = demoService.getDemoObject(id);
@@ -39,12 +41,9 @@ public class DemoResource {
                 .allow("OPTIONS").build();
     }
 
-
-
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     public Response getDemoObject(@NotNull @Valid DemoObject demoObject) throws AppException {
-        
 
         return Response.status(200).build();
     }
