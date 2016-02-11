@@ -1,4 +1,4 @@
-package com.barcelo.api.rest.demo.model;
+package com.demo.api.rest.model;
 
 
 import org.hibernate.validator.constraints.Length;

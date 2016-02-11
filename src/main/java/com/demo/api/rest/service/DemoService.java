@@ -1,6 +1,6 @@
-package com.barcelo.api.rest.demo.service;
+package com.demo.api.rest.service;
 
-import com.barcelo.api.rest.demo.model.DemoObject;
+import com.demo.api.rest.model.DemoObject;
 import org.springframework.stereotype.Service;
 
 @Service

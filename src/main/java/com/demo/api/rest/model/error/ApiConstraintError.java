@@ -1,4 +1,4 @@
-package com.barcelo.api.rest.demo.model.error;
+package com.demo.api.rest.model.error;
 
 
 public class ApiConstraintError {

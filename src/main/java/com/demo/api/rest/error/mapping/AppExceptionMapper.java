@@ -1,7 +1,8 @@
-package com.barcelo.api.rest.demo.error;
+package com.demo.api.rest.error.mapping;
 
 
-import com.barcelo.api.rest.demo.model.error.ApiErrorMessage;
+import com.demo.api.rest.error.AppException;
+import com.demo.api.rest.model.error.ApiErrorMessage;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

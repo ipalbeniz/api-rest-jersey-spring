@@ -21,7 +21,7 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>com.barcelo.api.rest.demo.config.JerseyResourceConfig</param-value>
+            <param-value>com.demo.api.rest.config.JerseyResourceConfig</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

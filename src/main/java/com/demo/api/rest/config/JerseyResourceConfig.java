@@ -1,4 +1,4 @@
-package com.barcelo.api.rest.demo.config;
+package com.demo.api.rest.config;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.GZipEncoder;
@@ -14,7 +14,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(RequestContextFilter.class);
 
         // Resources
-        packages("com.barcelo.api.rest.demo");
+        packages("com.demo.api.rest");
 
         // Features
         register(JacksonFeature.class);

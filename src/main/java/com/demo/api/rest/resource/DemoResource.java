@@ -1,9 +1,9 @@
-package com.barcelo.api.rest.demo.resource;
+package com.demo.api.rest.resource;
 
-import com.barcelo.api.rest.demo.error.ApiErrorCatalog;
-import com.barcelo.api.rest.demo.error.AppException;
-import com.barcelo.api.rest.demo.model.DemoObject;
-import com.barcelo.api.rest.demo.service.DemoService;
+import com.demo.api.rest.error.ApiErrorCatalog;
+import com.demo.api.rest.error.AppException;
+import com.demo.api.rest.model.DemoObject;
+import com.demo.api.rest.service.DemoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

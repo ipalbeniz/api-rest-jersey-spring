@@ -1,6 +1,7 @@
-package com.barcelo.api.rest.demo.error;
+package com.demo.api.rest.error.mapping;
 
-import com.barcelo.api.rest.demo.model.error.ApiErrorMessage;
+import com.demo.api.rest.error.ApiErrorCatalog;
+import com.demo.api.rest.model.error.ApiErrorMessage;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -19,7 +20,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
         ApiErrorMessage errorMessage = ApiErrorMessage.valueOf(ApiErrorCatalog.GENERIC_ERROR);
 
         setHttpStatus(exception, errorMessage);
-        setDeveloperMessage(exception, errorMessage);
+        //setStackTrace(exception, errorMessage);
         
         return Response.status(errorMessage.getStatus())
                 .entity(errorMessage)
@@ -27,7 +28,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
                 .build();
     }
 
-    private void setDeveloperMessage(Throwable exception, ApiErrorMessage errorMessage) {
+    private void setStackTrace(Throwable exception, ApiErrorMessage errorMessage) {
         
         StringWriter errorStackTrace = new StringWriter();
         

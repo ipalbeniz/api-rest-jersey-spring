@@ -1,4 +1,4 @@
-package com.barcelo.api.rest.demo.error;
+package com.demo.api.rest.error;
 
 public class AppException extends Exception {
     

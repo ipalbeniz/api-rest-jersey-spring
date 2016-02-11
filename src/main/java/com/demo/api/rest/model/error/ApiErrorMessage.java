@@ -1,6 +1,6 @@
-package com.barcelo.api.rest.demo.model.error;
+package com.demo.api.rest.model.error;
 
-import com.barcelo.api.rest.demo.error.ApiErrorCatalog;
+import com.demo.api.rest.error.ApiErrorCatalog;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;

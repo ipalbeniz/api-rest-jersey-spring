@@ -1,4 +1,4 @@
-package com.barcelo.api.rest.demo.config;
+package com.demo.api.rest.config;
 
 import org.glassfish.jersey.server.validation.ValidationConfig;
 import org.hibernate.validator.internal.engine.DefaultParameterNameProvider;
