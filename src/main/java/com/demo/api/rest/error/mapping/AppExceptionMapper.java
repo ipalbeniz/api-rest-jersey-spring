@@ -15,9 +15,9 @@ public class AppExceptionMapper implements ExceptionMapper<AppException> {
     @Override
     public Response toResponse(AppException appException) {
 
-        ApiErrorMessage apiErrorMessage = ApiErrorMessage.valueOf(appException.getApiErrorCatalog());
+        ApiErrorMessage apiErrorMessage = ApiErrorMessage.valueOf(appException.getAppErrorCatalog());
 
-        return Response.status(appException.getApiErrorCatalog().getHttpStatus())
+        return Response.status(appException.getAppErrorCatalog().getHttpStatus())
                 .entity(apiErrorMessage)
                 .type(MediaType.APPLICATION_JSON)
                 .build();

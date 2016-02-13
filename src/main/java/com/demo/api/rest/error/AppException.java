@@ -2,21 +2,21 @@ package com.demo.api.rest.error;
 
 public class AppException extends Exception {
     
-    private ApiErrorCatalog apiErrorCatalog;
+    private AppErrorCatalog appErrorCatalog;
 
-    public AppException(ApiErrorCatalog apiErrorCatalog) {
+    public AppException(AppErrorCatalog appErrorCatalog) {
 
-        super(apiErrorCatalog.getMessage());
-        this.apiErrorCatalog = apiErrorCatalog;
+        super(appErrorCatalog.getMessage());
+        this.appErrorCatalog = appErrorCatalog;
     }
 
-    public AppException(ApiErrorCatalog apiErrorCatalog, Throwable cause) {
+    public AppException(AppErrorCatalog appErrorCatalog, Throwable cause) {
 
-        super(apiErrorCatalog.getMessage(), cause);
-        this.apiErrorCatalog = apiErrorCatalog;
+        super(appErrorCatalog.getMessage(), cause);
+        this.appErrorCatalog = appErrorCatalog;
     }
 
-    public ApiErrorCatalog getApiErrorCatalog() {
-        return this.apiErrorCatalog;
+    public AppErrorCatalog getAppErrorCatalog() {
+        return this.appErrorCatalog;
     }
 }

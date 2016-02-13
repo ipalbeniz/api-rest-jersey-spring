@@ -1,6 +1,6 @@
 package com.demo.api.rest.error.mapping;
 
-import com.demo.api.rest.error.ApiErrorCatalog;
+import com.demo.api.rest.error.AppErrorCatalog;
 import com.demo.api.rest.model.error.ApiErrorMessage;
 
 import javax.ws.rs.WebApplicationException;
@@ -17,7 +17,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
     @Override
     public Response toResponse(Throwable exception) {
 
-        ApiErrorMessage errorMessage = ApiErrorMessage.valueOf(ApiErrorCatalog.GENERIC_ERROR);
+        ApiErrorMessage errorMessage = ApiErrorMessage.valueOf(AppErrorCatalog.GENERIC_ERROR);
 
         setHttpStatus(exception, errorMessage);
         //setStackTrace(exception, errorMessage);

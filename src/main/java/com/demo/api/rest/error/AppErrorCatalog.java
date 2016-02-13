@@ -2,7 +2,7 @@ package com.demo.api.rest.error;
 
 import javax.ws.rs.core.Response;
 
-public enum ApiErrorCatalog {
+public enum AppErrorCatalog {
 
     GENERIC_ERROR(Response.Status.INTERNAL_SERVER_ERROR, 1, "Unknown error", "An unexpected error has occurred. Please contact the technical support team."),
     NOT_FOUND_ERROR(Response.Status.NOT_FOUND, 2, "Not Found", "The resource was not found"),
@@ -14,7 +14,7 @@ public enum ApiErrorCatalog {
     private String message;
     private String developerMessage;
 
-    ApiErrorCatalog(Response.Status httpStatus, int code, String message, String developerMessage) {
+    AppErrorCatalog(Response.Status httpStatus, int code, String message, String developerMessage) {
         this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;

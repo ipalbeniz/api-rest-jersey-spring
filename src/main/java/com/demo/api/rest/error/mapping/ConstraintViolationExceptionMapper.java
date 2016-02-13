@@ -1,6 +1,6 @@
 package com.demo.api.rest.error.mapping;
 
-import com.demo.api.rest.error.ApiErrorCatalog;
+import com.demo.api.rest.error.AppErrorCatalog;
 import com.demo.api.rest.model.error.ApiErrorMessage;
 
 import javax.validation.ConstraintViolation;
@@ -16,7 +16,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<javax
 
     @Override
     public Response toResponse(javax.validation.ConstraintViolationException exception) {
-        ApiErrorMessage apiErrorMessage = ApiErrorMessage.valueOf(ApiErrorCatalog.VALIDATION_ERROR);
+        ApiErrorMessage apiErrorMessage = ApiErrorMessage.valueOf(AppErrorCatalog.VALIDATION_ERROR);
 
         for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
             Path.Node lastNode = getLastNodePath(constraintViolation.getPropertyPath().iterator());

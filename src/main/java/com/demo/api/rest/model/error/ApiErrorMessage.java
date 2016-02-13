@@ -1,6 +1,6 @@
 package com.demo.api.rest.model.error;
 
-import com.demo.api.rest.error.ApiErrorCatalog;
+import com.demo.api.rest.error.AppErrorCatalog;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;
@@ -34,13 +34,13 @@ public class ApiErrorMessage {
      */
     private List<ApiConstraintError> constraintErrors;
     
-    public static ApiErrorMessage valueOf(ApiErrorCatalog apiErrorCatalog) {
+    public static ApiErrorMessage valueOf(AppErrorCatalog appErrorCatalog) {
         ApiErrorMessage errorMessage = new ApiErrorMessage();
 
-        errorMessage.setCode(apiErrorCatalog.getCode());
-        errorMessage.setMessage(apiErrorCatalog.getMessage());
-        errorMessage.setDeveloperMessage(apiErrorCatalog.getDeveloperMessage());
-        errorMessage.setStatus(apiErrorCatalog.getHttpStatus().getStatusCode());
+        errorMessage.setCode(appErrorCatalog.getCode());
+        errorMessage.setMessage(appErrorCatalog.getMessage());
+        errorMessage.setDeveloperMessage(appErrorCatalog.getDeveloperMessage());
+        errorMessage.setStatus(appErrorCatalog.getHttpStatus().getStatusCode());
         
         return errorMessage;
     }

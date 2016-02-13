@@ -18,6 +18,7 @@ public class JerseyResourceConfig extends ResourceConfig {
 
         // Features
         register(JacksonFeature.class);
+        register(ResponseCorsFilter.class);
         EncodingFilter.enableFor(this, GZipEncoder.class);
     }
 }
