@@ -37,7 +37,7 @@ public class DemoResource {
             throw new AppException(AppErrorCatalog.DEMO_BUSINESS_ERROR);
         }
 
-        DemoObject demoObject = demoService.getDemoObject(id);
+        DemoObject demoObject = demoService.getDemoObjectById(id);
 
         return Response.status(200)
                 .entity(demoObject)

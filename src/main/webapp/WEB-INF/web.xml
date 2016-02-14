@@ -11,11 +11,19 @@
     </listener>
 
     <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring/applicationContext.xml</param-value>
+        <param-name>contextClass</param-name>
+        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
     </context-param>
 
-    <!-- Jersey Servlet -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            com.demo.api.rest.config.SpringContextConfig,
+            com.demo.api.rest.config.SpringCachingConfig
+        </param-value>
+    </context-param>
+
+    <!-- Jersey config -->
     <servlet>
         <servlet-name>JerseyServlet</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
