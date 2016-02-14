@@ -1,7 +1,7 @@
 package com.demo.api.rest.model.error;
 
 import com.demo.api.rest.error.AppErrorCatalog;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.ArrayList;
 import java.util.List;
