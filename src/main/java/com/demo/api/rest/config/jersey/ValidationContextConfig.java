@@ -1,4 +1,4 @@
-package com.demo.api.rest.config;
+package com.demo.api.rest.config.jersey;
 
 import org.glassfish.jersey.server.validation.ValidationConfig;
 import org.hibernate.validator.internal.engine.DefaultParameterNameProvider;
@@ -21,7 +21,7 @@ import java.util.List;
  * </ul>
  */
 @Provider
-public class ValidationConfigurationContextResolver implements ContextResolver<ValidationConfig> {
+public class ValidationContextConfig implements ContextResolver<org.glassfish.jersey.server.validation.ValidationConfig> {
     
     /**
      * Get context method.
@@ -30,7 +30,7 @@ public class ValidationConfigurationContextResolver implements ContextResolver<V
      * @return	Validation config.
      */
     @Override
-    public ValidationConfig getContext(final Class<?> type) {
+    public org.glassfish.jersey.server.validation.ValidationConfig getContext(final Class<?> type) {
         final ValidationConfig config = new ValidationConfig();
         config.parameterNameProvider(new RestAnnotationParameterNameProvider());
 

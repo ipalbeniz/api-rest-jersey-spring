@@ -1,4 +1,4 @@
-package com.demo.api.rest.config;
+package com.demo.api.rest.config.jersey;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.GZipEncoder;

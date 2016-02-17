@@ -1,4 +1,4 @@
-package com.demo.api.rest.cache.annotations;
+package com.demo.api.rest.config.jersey.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface CacheMaxAge {
+public @interface CacheControlMaxAge {
 
     /**
      * @return The amount of time to cache this resource.

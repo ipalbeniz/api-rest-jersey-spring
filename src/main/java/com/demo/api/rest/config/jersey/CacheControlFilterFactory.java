@@ -1,8 +1,10 @@
-package com.demo.api.rest.cache;
+package com.demo.api.rest.config.jersey;
 
-import com.demo.api.rest.cache.annotations.CacheMaxAge;
-import com.demo.api.rest.cache.annotations.NoCache;
+import com.demo.api.rest.config.jersey.annotations.CacheControlMaxAge;
+import com.demo.api.rest.config.jersey.annotations.CacheControlNoCache;
 
+import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.*;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.core.HttpHeaders;
@@ -10,7 +12,8 @@ import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
 
 @Provider
-public class CacheFilterFactory implements DynamicFeature {
+@Priority(Priorities.HEADER_DECORATOR)
+public class CacheControlFilterFactory implements DynamicFeature {
 
     private static final CacheResponseFilter NO_CACHE_FILTER = new CacheResponseFilter("no-cache");
 
@@ -19,12 +22,12 @@ public class CacheFilterFactory implements DynamicFeature {
 
         Method method = resourceInfo.getResourceMethod();
 
-        if (method.isAnnotationPresent(CacheMaxAge.class)) {
+        if (method.isAnnotationPresent(CacheControlMaxAge.class)) {
 
-            CacheMaxAge maxAge = method.getAnnotation(CacheMaxAge.class);
+            CacheControlMaxAge maxAge = method.getAnnotation(CacheControlMaxAge.class);
             featureContext.register(new CacheResponseFilter("max-age=" + maxAge.unit().toSeconds(maxAge.time())));
 
-        } else if (method.isAnnotationPresent(NoCache.class)) {
+        } else if (method.isAnnotationPresent(CacheControlNoCache.class)) {
 
             featureContext.register(NO_CACHE_FILTER);
         }

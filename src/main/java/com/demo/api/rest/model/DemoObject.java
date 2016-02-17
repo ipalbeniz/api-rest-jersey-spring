@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
-public class DemoObject {
+public class DemoObject extends ModelItem {
 
     @NotNull
     @Max(20)

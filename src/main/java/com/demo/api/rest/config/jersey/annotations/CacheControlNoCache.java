@@ -1,4 +1,4 @@
-package com.demo.api.rest.cache.annotations;
+package com.demo.api.rest.config.jersey.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface NoCache {
+public @interface CacheControlNoCache {
 }

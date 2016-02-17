@@ -1,7 +1,7 @@
 package com.demo.api.rest.resource;
 
-import com.demo.api.rest.cache.annotations.CacheMaxAge;
-import com.demo.api.rest.cache.annotations.NoCache;
+import com.demo.api.rest.config.jersey.annotations.CacheControlMaxAge;
+import com.demo.api.rest.config.jersey.annotations.CacheControlNoCache;
 import com.demo.api.rest.error.AppErrorCatalog;
 import com.demo.api.rest.error.AppException;
 import com.demo.api.rest.model.DemoObject;
@@ -28,7 +28,7 @@ public class DemoResource {
     @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    @CacheMaxAge(time = 60, unit = TimeUnit.SECONDS)
+    @CacheControlMaxAge(time = 60, unit = TimeUnit.SECONDS)
     public Response getDemoObject(@Max(5) @PathParam("id") Integer id, @NotNull @QueryParam("param") String param) throws AppException {
 
         if (StringUtils.equals(param, "unchecked")) {
@@ -46,7 +46,7 @@ public class DemoResource {
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    @NoCache
+    @CacheControlNoCache
     public Response postDemoObject(@NotNull @Valid DemoObject demoObject) throws AppException {
 
         return Response.status(200).build();

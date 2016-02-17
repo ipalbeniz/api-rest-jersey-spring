@@ -1,6 +1,6 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="ehcache.xsd"
-         updateCheck="true"
+         updateCheck="false"
          monitoring="autodetect"
          dynamicConfig="true">
 
@@ -8,7 +8,7 @@
 
     <cache name="demoObjectsById"
            maxEntriesLocalHeap="100"
-           maxEntriesLocalDisk="1000"
+           maxEntriesLocalDisk="500"
            eternal="false"
            diskSpoolBufferSizeMB="20"
            timeToIdleSeconds="300"

@@ -1,12 +1,13 @@
-package com.demo.api.rest.config;
+package com.demo.api.rest.config.jersey;
 
-import javax.annotation.Resource;
+import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 
-@Resource
+@Priority(Priorities.HEADER_DECORATOR)
 public class ResponseCorsFilter implements ContainerResponseFilter {
  
     @Override

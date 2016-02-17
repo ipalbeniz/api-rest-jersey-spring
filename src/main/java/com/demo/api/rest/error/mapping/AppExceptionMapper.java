@@ -4,23 +4,15 @@ package com.demo.api.rest.error.mapping;
 import com.demo.api.rest.error.AppException;
 import com.demo.api.rest.model.error.ApiErrorMessage;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class AppExceptionMapper implements ExceptionMapper<AppException> {
+public class AppExceptionMapper extends AbstractExceptionMapper<AppException> implements ExceptionMapper<AppException> {
 
     @Override
-    public Response toResponse(AppException appException) {
-
-        ApiErrorMessage apiErrorMessage = ApiErrorMessage.valueOf(appException.getAppErrorCatalog());
-
-        return Response.status(appException.getAppErrorCatalog().getHttpStatus())
-                .entity(apiErrorMessage)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+    protected ApiErrorMessage getApiErrorMessage(AppException exception) {
+        return ApiErrorMessage.valueOf(exception.getAppErrorCatalog());
     }
 
 }

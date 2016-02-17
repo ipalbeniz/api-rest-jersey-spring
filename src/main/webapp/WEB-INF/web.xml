@@ -18,8 +18,8 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            com.demo.api.rest.config.SpringContextConfig,
-            com.demo.api.rest.config.SpringCachingConfig
+            com.demo.api.rest.config.spring.SpringContextConfig,
+            com.demo.api.rest.config.spring.SpringCachingConfig
         </param-value>
     </context-param>
 
@@ -29,7 +29,7 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>com.demo.api.rest.config.JerseyResourceConfig</param-value>
+            <param-value>com.demo.api.rest.config.jersey.JerseyResourceConfig</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

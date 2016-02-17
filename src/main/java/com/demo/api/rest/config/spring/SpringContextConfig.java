@@ -1,4 +1,4 @@
-package com.demo.api.rest.config;
+package com.demo.api.rest.config.spring;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

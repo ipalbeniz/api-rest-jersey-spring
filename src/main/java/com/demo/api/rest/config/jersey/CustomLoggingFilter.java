@@ -1,4 +1,4 @@
-package com.demo.api.rest.config;
+package com.demo.api.rest.config.jersey;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Priority;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.*;
 import javax.ws.rs.core.Context;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Provider
+@Priority(10000)
 public class CustomLoggingFilter implements ContainerRequestFilter, ContainerResponseFilter, WriterInterceptor {
 
     private static final int DEFAULT_MAX_ENTITY_SIZE = 8 * 1024;

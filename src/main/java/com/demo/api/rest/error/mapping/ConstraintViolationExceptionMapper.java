@@ -4,18 +4,17 @@ import com.demo.api.rest.error.AppErrorCatalog;
 import com.demo.api.rest.model.error.ApiErrorMessage;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.util.Iterator;
 
 @Provider
-public class ConstraintViolationExceptionMapper implements ExceptionMapper<javax.validation.ConstraintViolationException> {
+public class ConstraintViolationExceptionMapper extends AbstractExceptionMapper<ConstraintViolationException> implements ExceptionMapper<ConstraintViolationException> {
 
     @Override
-    public Response toResponse(javax.validation.ConstraintViolationException exception) {
+    protected ApiErrorMessage getApiErrorMessage(ConstraintViolationException exception) {
         ApiErrorMessage apiErrorMessage = ApiErrorMessage.valueOf(AppErrorCatalog.VALIDATION_ERROR);
 
         for (ConstraintViolation<?> constraintViolation : exception.getConstraintViolations()) {
@@ -24,10 +23,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<javax
             apiErrorMessage.appendConstraintError(lastNode.getName(), constraintViolation.getMessage());
         }
 
-        return Response.status(apiErrorMessage.getStatus())
-                .entity(apiErrorMessage)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+        return apiErrorMessage;
     }
 
     private static Path.Node getLastNodePath(Iterator<Path.Node> iterator) {
@@ -39,4 +35,5 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<javax
 
         return lastElement;
     }
+
 }
