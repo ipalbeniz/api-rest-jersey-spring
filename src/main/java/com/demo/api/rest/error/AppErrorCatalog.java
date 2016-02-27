@@ -7,7 +7,9 @@ public enum AppErrorCatalog {
     GENERIC_ERROR(Response.Status.INTERNAL_SERVER_ERROR, 1, "Unknown error", "An unexpected error has occurred. Please contact the technical support team."),
     NOT_FOUND_ERROR(Response.Status.NOT_FOUND, 2, "Not Found", "The resource was not found"),
     VALIDATION_ERROR(Response.Status.BAD_REQUEST, 3, "Validation error", "The request is not valid"),
-    DEMO_BUSINESS_ERROR(Response.Status.INTERNAL_SERVER_ERROR, 3, "Business error", "An error has occurred executing the business process x");
+
+    RESOURCE_WITH_ID_NOT_FOUND_ERROR(Response.Status.NOT_FOUND, 4, "Resource with ID Not Found", "The resource with that ID was not found"),
+    ID_REQUIRED_ERROR(Response.Status.BAD_REQUEST, 5, "Validation error", "The ID is required");
 
     private Response.Status httpStatus;
     private int code;

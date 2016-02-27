@@ -1,5 +1,6 @@
-package com.demo.api.rest.config.jersey;
+package com.demo.api.rest.config.jersey.Interceptors;
 
+import com.demo.api.rest.config.jersey.annotations.Log;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.StringUtils;
@@ -7,8 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.*;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
@@ -17,21 +23,20 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
 @Provider
-@Priority(10000)
-public class CustomLoggingFilter implements ContainerRequestFilter, ContainerResponseFilter, WriterInterceptor {
+@Priority(Priorities.USER)
+@Log
+public class CustomLoggingInterceptor implements ContainerRequestFilter, ContainerResponseFilter, WriterInterceptor {
 
-    private static final int DEFAULT_MAX_ENTITY_SIZE = 8 * 1024;
-    private static final String ENTITY_LOGGER_PROPERTY = CustomLoggingFilter.class.getName() + ".entityLogger";
+    private static final String ENTITY_LOGGER_PROPERTY = "entityLogger";
 
     @Context
     private ResourceInfo resourceInfo;
 
-    private static final Logger log = LoggerFactory.getLogger(CustomLoggingFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomLoggingInterceptor.class);
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -53,26 +58,24 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
 
-        logResponseHeaders(responseContext.getHeaders());
-
-        log.debug("Response MediaType : {}", responseContext.getMediaType());
-
         log.debug("Response status : {}", responseContext.getStatus());
-
-        if (responseContext.hasEntity()) {
-            ByteArrayOutputStream otherOutputStream = new ByteArrayOutputStream();
-            TeeOutputStream teeOutputStream = new TeeOutputStream(responseContext.getEntityStream(), otherOutputStream);
-
-            responseContext.setEntityStream(teeOutputStream);
-            requestContext.setProperty(ENTITY_LOGGER_PROPERTY, otherOutputStream);
-        }
-
     }
 
     @Override
-    public void aroundWriteTo(WriterInterceptorContext writerInterceptorContext) throws IOException, WebApplicationException {
-        ByteArrayOutputStream stream = (ByteArrayOutputStream) writerInterceptorContext.getProperty(ENTITY_LOGGER_PROPERTY);
-        writerInterceptorContext.proceed();
+    public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
+
+        ByteArrayOutputStream stream = (ByteArrayOutputStream) context.getProperty(GZIPWriterInterceptor.STREAM_WITHOUT_GZIP_PROPERTY);
+
+        if ( stream == null) {
+            stream = new ByteArrayOutputStream();
+            context.setOutputStream(new TeeOutputStream(context.getOutputStream(), stream) );
+        }
+        context.proceed();
+
+        logResponseHeaders(context.getHeaders());
+
+        log.debug("Response MediaType : {}", context.getMediaType());
+
         if (stream != null) {
             log.debug("Response : [{}]", new String(stream.toByteArray()));
         }
@@ -95,46 +98,13 @@ public class CustomLoggingFilter implements ContainerRequestFilter, ContainerRes
 
     private void logRequestHeaders(MultivaluedMap<String, String> headers) {
         for (Map.Entry<String, List<String>> header : headers.entrySet()) {
-            log.debug("Header: {} = {} ", header.getKey(), StringUtils.join(header.getValue(),","));
+            log.debug("Request Header: {} = {} ", header.getKey(), StringUtils.join(header.getValue(),","));
         }
     }
 
     private void logResponseHeaders(MultivaluedMap<String, Object> headers) {
         for (Map.Entry<String, List<Object>> header : headers.entrySet()) {
-            log.debug("Header: {} = {} ", header.getKey(), StringUtils.join(header.getValue(),","));
-        }
-    }
-
-    private class LoggingStream extends OutputStream {
-
-        private final StringBuilder stringBuilder;
-        private final OutputStream inner;
-        private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        LoggingStream(final StringBuilder stringBuilder, final OutputStream inner) {
-            this.stringBuilder = stringBuilder;
-            this.inner = inner;
-        }
-
-        StringBuilder getStringBuilder() {
-            // write entity to the builder
-            final byte[] entity = baos.toByteArray();
-
-            stringBuilder.append(new String(entity, 0, Math.min(entity.length, DEFAULT_MAX_ENTITY_SIZE)));
-            if (entity.length > DEFAULT_MAX_ENTITY_SIZE) {
-                stringBuilder.append("...more...");
-            }
-            stringBuilder.append('\n');
-
-            return stringBuilder;
-        }
-
-        @Override
-        public void write(final int i) throws IOException {
-            if (baos.size() <= DEFAULT_MAX_ENTITY_SIZE) {
-                baos.write(i);
-            }
-            inner.write(i);
+            log.debug("Response Header: {} = {} ", header.getKey(), StringUtils.join(header.getValue(),","));
         }
     }
 }

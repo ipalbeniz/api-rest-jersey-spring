@@ -1,4 +1,4 @@
-package com.demo.api.rest.config.jersey;
+package com.demo.api.rest.config.jersey.Interceptors;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -8,7 +8,7 @@ import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 
 @Priority(Priorities.HEADER_DECORATOR)
-public class ResponseCorsFilter implements ContainerResponseFilter {
+public class CorsInterceptor implements ContainerResponseFilter {
  
     @Override
     public void filter(ContainerRequestContext request, ContainerResponseContext response) {

@@ -1,4 +1,4 @@
-package com.demo.api.rest.config.jersey;
+package com.demo.api.rest.config.jersey.Interceptors;
 
 import com.demo.api.rest.config.jersey.annotations.CacheControlMaxAge;
 import com.demo.api.rest.config.jersey.annotations.CacheControlNoCache;
@@ -13,9 +13,10 @@ import java.lang.reflect.Method;
 
 @Provider
 @Priority(Priorities.HEADER_DECORATOR)
-public class CacheControlFilterFactory implements DynamicFeature {
+public class CacheControlInterceptor implements DynamicFeature {
 
-    private static final CacheResponseFilter NO_CACHE_FILTER = new CacheResponseFilter("no-cache");
+    public static final String NO_CACHE = "no-cache";
+    public static final String MAX_AGE = "max-age";
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext featureContext) {
@@ -25,11 +26,11 @@ public class CacheControlFilterFactory implements DynamicFeature {
         if (method.isAnnotationPresent(CacheControlMaxAge.class)) {
 
             CacheControlMaxAge maxAge = method.getAnnotation(CacheControlMaxAge.class);
-            featureContext.register(new CacheResponseFilter("max-age=" + maxAge.unit().toSeconds(maxAge.time())));
+            featureContext.register(new CacheResponseFilter(MAX_AGE + "=" + maxAge.unit().toSeconds(maxAge.time())));
 
         } else if (method.isAnnotationPresent(CacheControlNoCache.class)) {
 
-            featureContext.register(NO_CACHE_FILTER);
+            featureContext.register(new CacheResponseFilter(NO_CACHE));
         }
     }
 
