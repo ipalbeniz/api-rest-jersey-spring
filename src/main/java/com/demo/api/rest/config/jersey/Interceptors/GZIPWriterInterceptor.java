@@ -18,6 +18,8 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 @Provider
@@ -26,12 +28,13 @@ import java.util.zip.GZIPOutputStream;
 public class GZIPWriterInterceptor implements ContainerResponseFilter, WriterInterceptor {
 
     public static final String STREAM_WITHOUT_GZIP_PROPERTY = "streamWithoutGzip";
-    public static final String GZIP = "gzip";
+    public static final List<String> ACCEPTED_GZIP_ENCODINGS = Arrays.asList("gzip", "x-gzip");
+    public static final String GZIP_CONTENT_ENCODING = "gzip";
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
         if (clientAcceptsGzipEncoding(containerRequestContext)) {
-            containerResponseContext.getHeaders().add(HttpHeaders.CONTENT_ENCODING, GZIP);
+            containerResponseContext.getHeaders().add(HttpHeaders.CONTENT_ENCODING, GZIP_CONTENT_ENCODING);
         }
     }
 
@@ -40,8 +43,10 @@ public class GZIPWriterInterceptor implements ContainerResponseFilter, WriterInt
 
         if (headers != null && headers.get(HttpHeaders.ACCEPT_ENCODING) != null) {
             for (String headerEncoding : headers.get(HttpHeaders.ACCEPT_ENCODING)) {
-                if (StringUtils.contains(headerEncoding, GZIP)) {
-                    return true;
+                for (String gzipEncoding : ACCEPTED_GZIP_ENCODINGS) {
+                    if (StringUtils.contains(headerEncoding, gzipEncoding)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -54,7 +59,7 @@ public class GZIPWriterInterceptor implements ContainerResponseFilter, WriterInt
 
         if (context.getHeaders() != null
                 && context.getHeaders().containsKey(HttpHeaders.CONTENT_ENCODING)
-                && context.getHeaders().get(HttpHeaders.CONTENT_ENCODING).contains(GZIP)) {
+                && context.getHeaders().get(HttpHeaders.CONTENT_ENCODING).contains(GZIP_CONTENT_ENCODING)) {
 
             OutputStream outputStream = context.getOutputStream();
 

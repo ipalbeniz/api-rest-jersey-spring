@@ -1,6 +1,8 @@
 package com.demo.api.rest.model;
 
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -25,6 +27,30 @@ public class Student extends ModelItem {
         this.id = id;
         this.name = name;
         this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        if (this == otherObject) return true;
+
+        if (otherObject == null || getClass() != otherObject.getClass()) return false;
+
+        Student student = (Student) otherObject;
+
+        return new EqualsBuilder()
+                .append(id, student.id)
+                .append(name, student.name)
+                .append(age, student.age)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(name)
+                .append(age)
+                .toHashCode();
     }
 
     public String getName() {

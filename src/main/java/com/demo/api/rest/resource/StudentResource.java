@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@Path("/student")
-public class StudentResource {
+@Path(StudentResource.STUDENT_RESOURCE_PATH)
+public class StudentResource extends ApiResource {
+
+    public static final String STUDENT_RESOURCE_PATH = "/student";
 
     @Autowired
     private StudentService studentService;
