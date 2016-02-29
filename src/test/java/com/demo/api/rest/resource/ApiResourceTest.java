@@ -43,6 +43,7 @@ public abstract class ApiResourceTest {
                 }
             };
 
+            // Start test container
             jerseyTest.setUp();
         }
     }

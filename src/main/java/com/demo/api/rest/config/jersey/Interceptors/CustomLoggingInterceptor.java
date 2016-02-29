@@ -56,12 +56,6 @@ public class CustomLoggingInterceptor implements ContainerRequestFilter, Contain
     }
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-
-        log.debug("Response status : {}", responseContext.getStatus());
-    }
-
-    @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
 
         ByteArrayOutputStream stream = (ByteArrayOutputStream) context.getProperty(GZIPWriterInterceptor.STREAM_WITHOUT_GZIP_PROPERTY);
@@ -80,6 +74,12 @@ public class CustomLoggingInterceptor implements ContainerRequestFilter, Contain
             log.debug("Response : [{}]", new String(stream.toByteArray()));
         }
 
+    }
+
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+
+        log.debug("Response status : {}", responseContext.getStatus());
     }
 
     private String getRequestEntityStream(ContainerRequestContext requestContext) throws IOException {

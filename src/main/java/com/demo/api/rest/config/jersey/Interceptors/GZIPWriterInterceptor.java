@@ -28,8 +28,8 @@ import java.util.zip.GZIPOutputStream;
 public class GZIPWriterInterceptor implements ContainerResponseFilter, WriterInterceptor {
 
     public static final String STREAM_WITHOUT_GZIP_PROPERTY = "streamWithoutGzip";
-    public static final List<String> ACCEPTED_GZIP_ENCODINGS = Arrays.asList("gzip", "x-gzip");
-    public static final String GZIP_CONTENT_ENCODING = "gzip";
+    private static final List<String> ACCEPTED_GZIP_ENCODINGS = Arrays.asList("gzip", "x-gzip");
+    private static final String GZIP_CONTENT_ENCODING = "gzip";
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
@@ -42,11 +42,10 @@ public class GZIPWriterInterceptor implements ContainerResponseFilter, WriterInt
         MultivaluedMap<String, String> headers = containerRequestContext.getHeaders();
 
         if (headers != null && headers.get(HttpHeaders.ACCEPT_ENCODING) != null) {
-            for (String headerEncoding : headers.get(HttpHeaders.ACCEPT_ENCODING)) {
-                for (String gzipEncoding : ACCEPTED_GZIP_ENCODINGS) {
-                    if (StringUtils.contains(headerEncoding, gzipEncoding)) {
-                        return true;
-                    }
+            String headerEncoding = headers.getFirst(HttpHeaders.ACCEPT_ENCODING);
+            for (String gzipEncoding : ACCEPTED_GZIP_ENCODINGS) {
+                if (StringUtils.contains(headerEncoding, gzipEncoding)) {
+                    return true;
                 }
             }
         }
@@ -61,12 +60,12 @@ public class GZIPWriterInterceptor implements ContainerResponseFilter, WriterInt
                 && context.getHeaders().containsKey(HttpHeaders.CONTENT_ENCODING)
                 && context.getHeaders().get(HttpHeaders.CONTENT_ENCODING).contains(GZIP_CONTENT_ENCODING)) {
 
-            OutputStream outputStream = context.getOutputStream();
+            OutputStream originalStream = context.getOutputStream();
 
-            ByteArrayOutputStream otherOutputStream = new ByteArrayOutputStream();
-            TeeOutputStream teeOutputStream = new TeeOutputStream(new GZIPOutputStream(outputStream), otherOutputStream);
+            ByteArrayOutputStream streamWithoutGzip = new ByteArrayOutputStream();
+            TeeOutputStream teeOutputStream = new TeeOutputStream(new GZIPOutputStream(originalStream), streamWithoutGzip);
 
-            context.setProperty(STREAM_WITHOUT_GZIP_PROPERTY, otherOutputStream);
+            context.setProperty(STREAM_WITHOUT_GZIP_PROPERTY, streamWithoutGzip);
 
             context.setOutputStream(teeOutputStream);
         }

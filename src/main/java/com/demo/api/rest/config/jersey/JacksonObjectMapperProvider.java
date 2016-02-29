@@ -1,6 +1,5 @@
 package com.demo.api.rest.config.jersey;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -24,6 +23,7 @@ public class JacksonObjectMapperProvider implements ContextResolver<ObjectMapper
     private static ObjectMapper createDefaultMapper() {
         ObjectMapper mapper = new ObjectMapper();
 
+        // Pretty print output
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         return mapper;

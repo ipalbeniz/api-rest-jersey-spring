@@ -1,4 +1,4 @@
-package com.demo.api.rest.service.mock;
+package com.demo.api.rest.mock.service;
 
 import com.demo.api.rest.error.AppException;
 import com.demo.api.rest.model.Student;
