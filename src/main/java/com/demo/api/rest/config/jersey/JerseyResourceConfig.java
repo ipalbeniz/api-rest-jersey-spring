@@ -18,6 +18,10 @@ public class JerseyResourceConfig extends ResourceConfig {
         // Resources
         packages("com.demo.api.rest");
 
+        // Swagger
+        register(io.swagger.jaxrs.listing.ApiListingResource.class);
+        register(io.swagger.jaxrs.listing.SwaggerSerializers.class);
+
         // Features
         register(JacksonFeature.class);
     }

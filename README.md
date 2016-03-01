@@ -9,17 +9,12 @@ API REST de ejemplo
 - Slf4j + Log4j2
 - Swagger
 
-### Cómo generar el fichero de especificación de swagger
-```
-mvn compile swagger:generate
-```
-
 ### Cómo arrancar el API
 ```
 mvn jetty:run
 ```
 
-En el pom.xml se encuentra la configuración del servidor jetty.
+En el pom.xml se encuentra la configuración del plugin "jetty-maven-plugin"
 
 ### Cómo probar el API
 
@@ -36,3 +31,25 @@ Debería devolver un estudiante de ejemplo en formato JSON:
   "age" : 34
 } ]
 ```
+
+### Cómo generar el fichero swagger.json 
+
+```
+mvn compile swagger:generate
+```
+
+En el pom.xml se encuentra la configuracion del plugin "swagger-maven-plugin"
+
+### Cómo consultar el fichero swagger.json generado al vuelo
+
+Acceder a la siguiente URL:
+```
+http://localhost:8080/swagger.json
+``` 
+
+### Cómo consultar el fichero swagger.yaml generado al vuelo
+
+Acceder a la siguiente URL:
+```
+http://localhost:8080/swagger.yaml
+``` 

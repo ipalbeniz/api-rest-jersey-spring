@@ -39,4 +39,11 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
+    <!-- Swagger config -->
+    <servlet>
+        <servlet-name>SwaggerConfig</servlet-name>
+        <servlet-class>com.demo.api.rest.config.swagger.SwaggerConfig</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
 </web-app>
