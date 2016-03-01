@@ -19,7 +19,7 @@ public class SwaggerConfig extends HttpServlet {
         beanConfig.setTitle("Students REST API Demo");
         beanConfig.setDescription("Sample REST API");
         beanConfig.setHost("localhost:8080");
-        beanConfig.setBasePath("/");
+        beanConfig.setBasePath("/api");
         beanConfig.setResourcePackage("com.demo.api.rest.resource");
         beanConfig.setScan(true);
     }

@@ -20,7 +20,7 @@ En el pom.xml se encuentra la configuración del plugin "jetty-maven-plugin"
 
 Abrir en el navegador la siguiente URL
 ```
-http://localhost:8080/student
+http://localhost:8080/api/student
 ```
 
 Debería devolver un estudiante de ejemplo en formato JSON:
@@ -32,6 +32,15 @@ Debería devolver un estudiante de ejemplo en formato JSON:
 } ]
 ```
 
+### Cómo consultar la documentación del API
+ 
+Abrir en el navegador la siguiente URL
+```
+http://localhost:8080/
+```
+
+Debería mostrarse la documentación del API en formato web
+ 
 ### Cómo generar el fichero swagger.json 
 
 ```
@@ -44,12 +53,12 @@ En el pom.xml se encuentra la configuracion del plugin "swagger-maven-plugin"
 
 Acceder a la siguiente URL:
 ```
-http://localhost:8080/swagger.json
+http://localhost:8080/api/swagger.json
 ``` 
 
 ### Cómo consultar el fichero swagger.yaml generado al vuelo
 
 Acceder a la siguiente URL:
 ```
-http://localhost:8080/swagger.yaml
+http://localhost:8080/api/swagger.yaml
 ``` 

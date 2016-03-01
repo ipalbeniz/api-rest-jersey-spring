@@ -36,7 +36,7 @@
 
     <servlet-mapping>
         <servlet-name>JerseyServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
     <!-- Swagger config -->
@@ -45,5 +45,9 @@
         <servlet-class>com.demo.api.rest.config.swagger.SwaggerConfig</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
+    
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>

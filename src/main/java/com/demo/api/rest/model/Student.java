@@ -1,6 +1,7 @@
 package com.demo.api.rest.model;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Length;
@@ -53,6 +54,7 @@ public class Student extends ModelItem {
                 .toHashCode();
     }
 
+    @ApiModelProperty(example = "Iñaki", required = true)
     public String getName() {
         return name;
     }
@@ -61,6 +63,7 @@ public class Student extends ModelItem {
         this.name = name;
     }
 
+    @ApiModelProperty(example = "1")
     public String getId() {
         return id;
     }
@@ -69,6 +72,7 @@ public class Student extends ModelItem {
         this.id = id;
     }
 
+    @ApiModelProperty(example = "34", required = true)
     public Integer getAge() {
         return age;
     }

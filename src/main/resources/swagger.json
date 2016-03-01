@@ -137,14 +137,17 @@
       "required" : [ "age", "name" ],
       "properties" : {
         "id" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "1"
         },
         "name" : {
-          "type" : "string"
+          "type" : "string",
+          "example" : "Iñaki"
         },
         "age" : {
           "type" : "integer",
           "format" : "int32",
+          "example" : "34",
           "maximum" : 150.0
         }
       }
