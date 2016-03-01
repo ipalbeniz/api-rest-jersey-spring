@@ -1,0 +1,153 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Sample REST API",
+    "version" : "v1",
+    "title" : "Students REST API Demo"
+  },
+  "basePath" : "/",
+  "tags" : [ {
+    "name" : "student",
+    "description" : "Operations about students"
+  } ],
+  "schemes" : [ "http", "https" ],
+  "paths" : {
+    "/student" : {
+      "get" : {
+        "tags" : [ "student" ],
+        "summary" : "Get students",
+        "description" : "Returns a list of students",
+        "operationId" : "getStudents",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Student"
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "student" ],
+        "summary" : "Create a new student",
+        "description" : "Creates a new student",
+        "operationId" : "insertStudent",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Student information",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Student"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Student"
+            }
+          },
+          "400" : {
+            "description" : "Invalid student received"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "student" ],
+        "summary" : "Updates a student",
+        "description" : "Updates an existing student",
+        "operationId" : "updateStudent",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Student information",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Student"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Student"
+            }
+          },
+          "400" : {
+            "description" : "Invalid student received"
+          },
+          "404" : {
+            "description" : "Student not found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
+    "/student/{id}" : {
+      "get" : {
+        "tags" : [ "student" ],
+        "summary" : "Get student by id",
+        "description" : "Finds a student by id",
+        "operationId" : "getStudent",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Student id",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Student"
+            }
+          },
+          "404" : {
+            "description" : "Student not found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Student" : {
+      "type" : "object",
+      "required" : [ "age", "name" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "age" : {
+          "type" : "integer",
+          "format" : "int32",
+          "maximum" : 150.0
+        }
+      }
+    }
+  }
+}
