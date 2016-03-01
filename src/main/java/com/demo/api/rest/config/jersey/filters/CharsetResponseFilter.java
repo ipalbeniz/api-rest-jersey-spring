@@ -1,4 +1,4 @@
-package com.demo.api.rest.config.jersey.Interceptors;
+package com.demo.api.rest.config.jersey.filters;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;

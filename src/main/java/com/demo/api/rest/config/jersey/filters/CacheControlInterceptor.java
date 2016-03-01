@@ -1,4 +1,4 @@
-package com.demo.api.rest.config.jersey.Interceptors;
+package com.demo.api.rest.config.jersey.filters;
 
 import com.demo.api.rest.config.jersey.annotations.CacheControlMaxAge;
 import com.demo.api.rest.config.jersey.annotations.CacheControlNoCache;
