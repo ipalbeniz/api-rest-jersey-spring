@@ -30,7 +30,6 @@ public class StatisticListener implements MonitoringStatisticsListener {
         if (System.currentTimeMillis() > lastTime + MILLIS_BETWEEN_STATISTICS_LOG) {
 
             logStatisticsByOperation(monitoringStatistics);
-
             logSummaryStatistics(monitoringStatistics);
 
             lastTime = System.currentTimeMillis();
@@ -81,7 +80,7 @@ public class StatisticListener implements MonitoringStatisticsListener {
     }
 
     private String getStatsMessage(TimeWindowStatistics timeWindowStatistics) {
-        return String.format("Total req: %d - Req/s: %.2f - Duration max min avg: %d %d %d ms"
+        return String.format("Total req: %d - Req/s: %.2f - Processing time in ms: %d max, %d min, %d avg"
                 , timeWindowStatistics.getRequestCount()
                 , timeWindowStatistics.getRequestsPerSecond()
                 , timeWindowStatistics.getMaximumDuration()

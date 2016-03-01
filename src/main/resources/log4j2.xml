@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <Appenders>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %5p %50c{5}:%-4L - *** %m%n"/>
+        </Console>
+
+    </Appenders>
+
+
+    <Loggers>
+
+        <Logger name="org.springframework.cache" level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="org.springframework" level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="net.sf.ehcache" level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="org.hibernate.validator" level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="org.eclipse.jetty" level="debug">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="com.demo.api.rest" level="debug">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+
+        <Root level="debug">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
