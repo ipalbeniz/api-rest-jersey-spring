@@ -27,15 +27,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@Path(StudentResource.STUDENT_RESOURCE_PATH)
-@Api(value = StudentResource.STUDENT_RESOURCE_PATH, description = "Operations about students")
+@Path(StudentResource.STUDENT_BASE_RESOURCE_PATH)
+@Api(value = StudentResource.STUDENT_BASE_RESOURCE_PATH, description = "Operations about students")
 public class StudentResource extends ApiResource {
 
-    public static final String STUDENT_RESOURCE_PATH = "/student";
+	public static final String STUDENT_BASE_RESOURCE_PATH = "/student";
+    public static final String STUDENT_BY_ID_RESOURCE_PATH = "/{id}";
 
     @Autowired
     private StudentService studentService;
@@ -54,9 +56,8 @@ public class StudentResource extends ApiResource {
 
         Collection<Student> students = studentService.getStudents();
 
-        return Response.status(Response.Status.OK)
-                .entity(students)
-                .build();
+		return Response.ok(students)
+				.build();
     }
 
     @GET
@@ -78,9 +79,8 @@ public class StudentResource extends ApiResource {
             throw new NotFoundException();
         }
 
-        return Response.status(Response.Status.OK)
-                .entity(student)
-                .build();
+		return Response.ok(student)
+				.build();
     }
 
     @POST
@@ -97,12 +97,23 @@ public class StudentResource extends ApiResource {
 
         studentService.insertStudent(student);
 
-        return Response.status(Response.Status.OK)
-                .entity(student)
-                .build();
+		URI entityURI = getEntityURI(student.getId(), true);
+		
+		return Response.created(entityURI).entity(student).build();
     }
 
+	public static URI getEntityURI(@NotNull @Valid String studentId, boolean withApiBasePath) {
+		String path = STUDENT_BASE_RESOURCE_PATH + STUDENT_BY_ID_RESOURCE_PATH.replace("{id}", studentId);
+		
+		if (withApiBasePath) {
+			path = API_BASE_PATH + path;
+		}
+		
+		return URI.create(path);
+	}
+
     @PUT
+    @Path(STUDENT_BY_ID_RESOURCE_PATH)
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     @CacheControlNoCache
@@ -113,13 +124,21 @@ public class StudentResource extends ApiResource {
     @ApiResponses(value = {@ApiResponse(code = 500, message = "Internal server error")
             , @ApiResponse(code = 400, message = "Invalid student received")
             , @ApiResponse(code = 404, message = "Student not found")})
-    public Response updateStudent(@ApiParam(value = "Student information", required = true) @NotNull @Valid Student student) throws AppException {
+    public Response updateStudent(@ApiParam(value = "Student id", required = true) @NotNull @PathParam("id") String id, @ApiParam(value = "Student information", required = true) @NotNull @Valid Student student) throws AppException {
 
-        studentService.updateStudent(student);
+        Student existingStudent = studentService.getStudentById(id);
 
-        return Response.status(Response.Status.OK)
-                .entity(student)
-                .build();
+        if (existingStudent == null) {
+            throw new NotFoundException();
+        }
+
+        // Avoid updating the student if the student already has the received information
+        student.setId(id);
+        if (!student.equals(existingStudent)) {
+            studentService.updateStudent(student);
+        }
+
+        return Response.ok(student).build();
     }
 
 }

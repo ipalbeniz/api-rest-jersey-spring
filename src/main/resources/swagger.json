@@ -64,40 +64,6 @@
             "description" : "Internal server error"
           }
         }
-      },
-      "put" : {
-        "tags" : [ "student" ],
-        "summary" : "Updates a student",
-        "description" : "Updates an existing student",
-        "operationId" : "updateStudent",
-        "consumes" : [ "application/json" ],
-        "produces" : [ "application/json" ],
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "description" : "Student information",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/Student"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Student"
-            }
-          },
-          "400" : {
-            "description" : "Invalid student received"
-          },
-          "404" : {
-            "description" : "Student not found"
-          },
-          "500" : {
-            "description" : "Internal server error"
-          }
-        }
       }
     },
     "/student/{id}" : {
@@ -120,6 +86,46 @@
             "schema" : {
               "$ref" : "#/definitions/Student"
             }
+          },
+          "404" : {
+            "description" : "Student not found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "student" ],
+        "summary" : "Updates a student",
+        "description" : "Updates an existing student",
+        "operationId" : "updateStudent",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Student id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Student information",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Student"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Student"
+            }
+          },
+          "400" : {
+            "description" : "Invalid student received"
           },
           "404" : {
             "description" : "Student not found"

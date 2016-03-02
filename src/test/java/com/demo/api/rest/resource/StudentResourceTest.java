@@ -2,6 +2,7 @@ package com.demo.api.rest.resource;
 
 import com.demo.api.rest.model.Student;
 import com.demo.api.rest.service.StudentService;
+import org.eclipse.jetty.http.HttpHeader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class StudentResourceTest extends ApiResourceTest {
     public void testGetStudentOK() {
         String studentId = "1";
 
-        Response response = jerseyTest.target(StudentResource.STUDENT_RESOURCE_PATH + "/" + studentId).request().get();
+        Response response = jerseyTest.target(StudentResource.getEntityURI(studentId, false).getPath()).request().get();
         Student studentFromApi = response.readEntity(Student.class);
 
         Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -37,14 +38,14 @@ public class StudentResourceTest extends ApiResourceTest {
     public void testGetStudentNotFound() {
         String studentId = "9";
 
-        Response response = jerseyTest.target(StudentResource.STUDENT_RESOURCE_PATH + "/" + studentId).request().get();
+        Response response = jerseyTest.target(StudentResource.STUDENT_BASE_RESOURCE_PATH + "/" + studentId).request().get();
 
         Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void testGetAllStudents() {
-        Response response = jerseyTest.target(StudentResource.STUDENT_RESOURCE_PATH).request().get();
+        Response response = jerseyTest.target(StudentResource.STUDENT_BASE_RESOURCE_PATH).request().get();
         List<Student> studentsFromApi = response.readEntity(new GenericType<List<Student>>(){});
 
         Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -55,12 +56,12 @@ public class StudentResourceTest extends ApiResourceTest {
     public void testInsertStudent() {
         Student newStudent = getNewStudent();
 
-        Response response = jerseyTest.target(StudentResource.STUDENT_RESOURCE_PATH).request()
+        Response response = jerseyTest.target(StudentResource.STUDENT_BASE_RESOURCE_PATH).request()
                 .post(Entity.entity(newStudent, MediaType.APPLICATION_JSON_TYPE));
         Student studentFromApi = response.readEntity(Student.class);
 
-        Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        Assert.assertNotNull(studentFromApi.getId());
+        Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+        Assert.assertNotNull(response.getHeaderString(HttpHeader.LOCATION.asString()));
         Assert.assertEquals(newStudent.getName(), studentFromApi.getName());
     }
 
@@ -68,7 +69,7 @@ public class StudentResourceTest extends ApiResourceTest {
     public void testInsertInvalidStudent() {
         Student newStudent = getNewInvalidStudent();
 
-        Response response = jerseyTest.target(StudentResource.STUDENT_RESOURCE_PATH).request()
+        Response response = jerseyTest.target(StudentResource.STUDENT_BASE_RESOURCE_PATH).request()
                 .post(Entity.entity(newStudent, MediaType.APPLICATION_JSON_TYPE));
 
         Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());

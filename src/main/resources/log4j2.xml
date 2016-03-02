@@ -12,36 +12,36 @@
 
     <Loggers>
 
-        <Logger name="org.springframework.cache" level="info">
+        <Logger name="org.springframework.cache" level="info" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <Logger name="org.springframework" level="warn">
+        <Logger name="org.springframework" level="warn" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <Logger name="net.sf.ehcache" level="info">
+        <Logger name="net.sf.ehcache" level="info" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <Logger name="org.hibernate.validator" level="info">
+        <Logger name="org.hibernate.validator" level="info" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <Logger name="org.eclipse.jetty" level="info">
+        <Logger name="org.eclipse.jetty" level="info" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <Logger name="io.swagger" level="info">
+        <Logger name="io.swagger" level="info" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
-        <Logger name="org.reflections" level="info">
+        <Logger name="org.reflections" level="info" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
 
-        <Logger name="com.demo.api.rest" level="debug">
+        <Logger name="com.demo.api.rest" level="debug" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
