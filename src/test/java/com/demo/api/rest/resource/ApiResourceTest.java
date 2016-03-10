@@ -53,5 +53,6 @@ public abstract class ApiResourceTest {
     @AfterClass
     public static void tearDown() throws Exception {
         jerseyTest.tearDown();
+        jerseyTest = null;
     }
 }
