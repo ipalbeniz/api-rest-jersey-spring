@@ -8,6 +8,7 @@ API REST de ejemplo
 - Jetty
 - Slf4j + Log4j2
 - Swagger
+- MongoDB
 
 ### Cómo arrancar el API
 ```
@@ -30,6 +31,21 @@ Debería devolver un estudiante de ejemplo en formato JSON:
   "name" : "Iñaki",
   "age" : 34
 } ]
+```
+
+### Cómo guardar trazas de las peticiones y respuestas en MongoDB
+
+Abrir el fichero api.properties y cambiar la siguiente propiedad para activar el log en mongo:
+```
+log.mongo.active=true
+```
+
+A continuación, editar el fichero mongo.properties para configurar el host, puerto, nombre de la base de datos y nombre de la colección para los logs.
+```
+mongo.host=localhost
+mongo.port=27017
+mongo.database=mydatabase
+mongo.collection.apilogs=apiLogs
 ```
 
 ### Cómo consultar la documentación del API

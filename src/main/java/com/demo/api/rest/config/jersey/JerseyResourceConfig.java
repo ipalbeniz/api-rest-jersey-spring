@@ -1,5 +1,6 @@
 package com.demo.api.rest.config.jersey;
 
+import com.demo.api.rest.error.mapping.JsonParseExceptionMapper;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
@@ -24,6 +25,9 @@ public class JerseyResourceConfig extends ResourceConfig {
 
         // Features
         register(JacksonFeature.class);
+
+        // This has to be registered after JacksonFeature in order to override the default JsonParseExceptionMapper
+        register(JsonParseExceptionMapper.class);
     }
 
 }

@@ -18,8 +18,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            com.demo.api.rest.config.spring.SpringContextConfig,
-            com.demo.api.rest.config.spring.SpringCacheConfig
+            com.demo.api.rest.config.spring.SpringContextConfig
         </param-value>
     </context-param>
 

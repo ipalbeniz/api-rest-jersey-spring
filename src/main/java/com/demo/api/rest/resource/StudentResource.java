@@ -86,6 +86,7 @@ public class StudentResource extends ApiResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
+    @Log
     @CacheControlNoCache
     @ApiOperation(value = "Create a new student",
             notes = "Creates a new student",
@@ -116,6 +117,7 @@ public class StudentResource extends ApiResource {
     @Path(STUDENT_BY_ID_RESOURCE_PATH)
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
+    @Log
     @CacheControlNoCache
     @ApiOperation(value = "Updates a student",
             notes = "Updates an existing student",

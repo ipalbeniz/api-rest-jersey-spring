@@ -1,11 +1,22 @@
 package com.demo.api.rest.config.jersey.filters;
 
 import com.demo.api.rest.config.jersey.annotations.Log;
+import com.demo.api.rest.model.log.ApiLog;
+import com.demo.api.rest.model.log.ApiLogRequest;
+import com.demo.api.rest.model.log.ApiLogResponse;
+import com.demo.api.rest.repository.ApiLogRespository;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+import com.mongodb.util.JSONParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -16,22 +27,31 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Log
 @Provider
 @Priority(Priorities.USER)
-@Log
+@Component
 public class CustomLoggingInterceptor implements ContainerRequestFilter, ContainerResponseFilter, WriterInterceptor {
 
-    private static final String ENTITY_LOGGER_PROPERTY = "entityLogger";
+    public static final String API_LOG_REQUEST_PROPERTY = "apiLogRequest";
+    public static final String API_LOG_RESPONSE_PROPERTY = "apiLogResponse";
+
+    @Autowired
+    private ApiLogRespository apiLogRespository;
+
+    @Value("${log.mongo.active}")
+    private boolean logMongoActive;
 
     @Context
     private ResourceInfo resourceInfo;
@@ -39,24 +59,144 @@ public class CustomLoggingInterceptor implements ContainerRequestFilter, Contain
     private static final Logger log = LoggerFactory.getLogger(CustomLoggingInterceptor.class);
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
 
-        log.debug("Path : {} ", requestContext.getUriInfo().getPath());
-        log.debug("Method : {}", requestContext.getMethod());
-        log.debug("MediaType : {}", requestContext.getMediaType());
-        log.debug("Resource : {}.{} ", resourceInfo.getResourceClass().getCanonicalName(), resourceInfo.getResourceMethod().getName());
+        ApiLogRequest apiLogRequest = createApiLogRequest(requestContext);
+        requestContext.setProperty(API_LOG_REQUEST_PROPERTY, apiLogRequest);
 
-        logRequestHeaders(requestContext.getHeaders());
-        logQueryParameters(requestContext.getUriInfo().getQueryParameters());
-
-        if (requestContext.hasEntity()) {
-            log.debug("Request : {}", getRequestEntityStream(requestContext));
-        }
-
+        logApiRequest(apiLogRequest);
     }
 
     @Override
-    public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+
+        ApiLogResponse apiLogResponse = createApiLogResponse(requestContext, responseContext);
+        requestContext.setProperty(API_LOG_RESPONSE_PROPERTY, apiLogResponse);
+    }
+
+    @Override
+    public void aroundWriteTo(WriterInterceptorContext context) throws WebApplicationException, IOException {
+
+        ByteArrayOutputStream responseEntity = getResponseEntity(context);
+
+        // Continue with the other interceptors in order to get the responseEntity content
+        context.proceed();
+
+        ApiLogResponse apiLogResponse = (ApiLogResponse) context.getProperty(API_LOG_RESPONSE_PROPERTY);
+
+        String responseEntityString = new String(responseEntity.toByteArray());
+        if (StringUtils.isNotEmpty(responseEntityString)) {
+            try {
+                apiLogResponse.setEntity((DBObject) JSON.parse(responseEntityString));
+            } catch (JSONParseException e) {
+                apiLogResponse.setUnparsedEntity(responseEntityString);
+            }
+        }
+
+        logApiResponse(apiLogResponse, responseEntityString);
+
+        if (logMongoActive) {
+            saveApiLog(context);
+        }
+    }
+
+    private void saveApiLog(WriterInterceptorContext context) {
+
+        ApiLogRequest apiLogRequest = (ApiLogRequest) context.getProperty(API_LOG_REQUEST_PROPERTY);
+        ApiLogResponse apiLogResponse = (ApiLogResponse) context.getProperty(API_LOG_RESPONSE_PROPERTY);
+
+        ApiLog apiLog = new ApiLog();
+
+        apiLog.setRequest(apiLogRequest);
+        apiLog.setResponse(apiLogResponse);
+        if (apiLogRequest != null && apiLogResponse != null) {
+            apiLog.setProcessTime(apiLogResponse.getDateTime().getTime() - apiLogRequest.getDateTime().getTime());
+        }
+
+        apiLogRespository.save(apiLog);
+    }
+
+    private ApiLogRequest createApiLogRequest(ContainerRequestContext requestContext) {
+
+        ApiLogRequest apiLogRequest = new ApiLogRequest();
+
+        apiLogRequest.setDateTime(new Date());
+        apiLogRequest.setPath(requestContext.getUriInfo().getPath());
+        apiLogRequest.setMethod(requestContext.getMethod());
+        apiLogRequest.setMediaType(requestContext.getMediaType().toString());
+
+        // Headers
+        if (!CollectionUtils.isEmpty(requestContext.getHeaders())) {
+            Map<String, String> headers = new HashMap<>();
+            for (Map.Entry<String, List<String>> header : requestContext.getHeaders().entrySet()) {
+                headers.put(header.getKey(), StringUtils.join(header.getValue(), ","));
+            }
+            apiLogRequest.setHeaders(headers);
+        }
+
+        // QueryParameters
+        if (requestContext.getUriInfo() != null && !CollectionUtils.isEmpty(requestContext.getUriInfo().getQueryParameters())) {
+            Map<String, String> queryParameters = new HashMap<>();
+            for (Map.Entry<String, List<String>> queryParam : requestContext.getUriInfo().getQueryParameters().entrySet()) {
+                queryParameters.put(queryParam.getKey(), StringUtils.join(queryParam.getValue(), ","));
+            }
+            apiLogRequest.setQueryParameters(queryParameters);
+        }
+
+        if (requestContext.hasEntity()) {
+            String requestEntityString = getRequestEntityString(requestContext);
+            try {
+                apiLogRequest.setEntity((DBObject) JSON.parse(requestEntityString));
+            } catch (JSONParseException e) {
+                apiLogRequest.setUnparsedEntity(requestEntityString);
+            }
+        }
+
+        return apiLogRequest;
+    }
+
+    private void logApiRequest(ApiLogRequest apiLogRequest) {
+
+        log.debug("Request Path : {} ", apiLogRequest.getPath());
+        log.debug("Request Method : {}", apiLogRequest.getMethod());
+        log.debug("Request MediaType : {}", apiLogRequest.getMediaType());
+
+        if (!CollectionUtils.isEmpty(apiLogRequest.getHeaders())) {
+            for (Map.Entry<String, String> header : apiLogRequest.getHeaders().entrySet()) {
+                log.debug("Request Header: {} = {} ", header.getKey(), header.getValue());
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(apiLogRequest.getQueryParameters())) {
+            for (Map.Entry<String, String> queryParam : apiLogRequest.getQueryParameters().entrySet()) {
+                log.debug("Request Query Param: {} = {} ", queryParam.getKey(), queryParam.getValue());
+            }
+        }
+
+        if (apiLogRequest.getEntity() != null) {
+            log.debug("Request: {}", apiLogRequest.getEntity());
+        } else if (StringUtils.isNotEmpty(apiLogRequest.getUnparsedEntity())) {
+            log.debug("Request: {}", apiLogRequest.getUnparsedEntity());
+        }
+    }
+
+    private void logApiResponse(ApiLogResponse apiLogResponse, String responseEntityString) {
+
+        log.debug("Response MediaType: {}", apiLogResponse.getMediaType());
+        log.debug("Response status: {}", apiLogResponse.getHttpStatusCode());
+
+        if (!CollectionUtils.isEmpty(apiLogResponse.getHeaders())) {
+            for (Map.Entry<String, String> header : apiLogResponse.getHeaders().entrySet()) {
+                log.debug("Response Header: {} = {} ", header.getKey(), header.getValue());
+            }
+        }
+
+        if (StringUtils.isNotEmpty(responseEntityString)) {
+            log.debug("Response: {}", responseEntityString);
+        }
+    }
+
+    private ByteArrayOutputStream getResponseEntity(WriterInterceptorContext context) {
 
         ByteArrayOutputStream stream = (ByteArrayOutputStream) context.getProperty(GZIPWriterInterceptor.STREAM_WITHOUT_GZIP_PROPERTY);
 
@@ -64,47 +204,39 @@ public class CustomLoggingInterceptor implements ContainerRequestFilter, Contain
             stream = new ByteArrayOutputStream();
             context.setOutputStream(new TeeOutputStream(context.getOutputStream(), stream) );
         }
-        context.proceed();
 
-        logResponseHeaders(context.getHeaders());
+        return stream;
+    }
 
-        log.debug("Response MediaType : {}", context.getMediaType());
+    private ApiLogResponse createApiLogResponse(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
 
-        if (stream != null) {
-            log.debug("Response : [{}]", new String(stream.toByteArray()));
+        ApiLogResponse apiLogResponse = new ApiLogResponse();
+
+        apiLogResponse.setDateTime(new Date());
+        apiLogResponse.setMediaType(responseContext.getMediaType().toString());
+        apiLogResponse.setHttpStatusCode(responseContext.getStatus());
+
+        Map<String, String> headers = new HashMap<>();
+        for (Map.Entry<String, List<Object>> header : responseContext.getHeaders().entrySet()) {
+            headers.put(header.getKey(), StringUtils.join(header.getValue(),","));
         }
+        apiLogResponse.setHeaders(headers);
 
+        return apiLogResponse;
     }
 
-    @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+    private String getRequestEntityString(ContainerRequestContext requestContext) {
 
-        log.debug("Response status : {}", responseContext.getStatus());
-    }
+        try {
+            byte [] requestEntityBytes = new byte[0];
 
-    private String getRequestEntityStream(ContainerRequestContext requestContext) throws IOException {
+            requestEntityBytes = IOUtils.toByteArray(requestContext.getEntityStream());
+            requestContext.setEntityStream(new ByteArrayInputStream(requestEntityBytes));
 
-        byte [] requestEntityBytes = IOUtils.toByteArray(requestContext.getEntityStream());
-        requestContext.setEntityStream(new ByteArrayInputStream(requestEntityBytes));
-
-        return new String(requestEntityBytes);
-    }
-
-    private void logQueryParameters(MultivaluedMap<String, String> queryParameters) {
-        for (Map.Entry<String, List<String>> queryParameter : queryParameters.entrySet()) {
-            log.debug("Query Parameter: {} = {}", queryParameter.getKey(), StringUtils.join(queryParameter.getValue(),","));
-        }
-    }
-
-    private void logRequestHeaders(MultivaluedMap<String, String> headers) {
-        for (Map.Entry<String, List<String>> header : headers.entrySet()) {
-            log.debug("Request Header: {} = {} ", header.getKey(), StringUtils.join(header.getValue(),","));
-        }
-    }
-
-    private void logResponseHeaders(MultivaluedMap<String, Object> headers) {
-        for (Map.Entry<String, List<Object>> header : headers.entrySet()) {
-            log.debug("Response Header: {} = {} ", header.getKey(), StringUtils.join(header.getValue(),","));
+            return new String(requestEntityBytes);
+        } catch (IOException e) {
+            log.error("Error reading request entity", e);
+            return null;
         }
     }
 }
