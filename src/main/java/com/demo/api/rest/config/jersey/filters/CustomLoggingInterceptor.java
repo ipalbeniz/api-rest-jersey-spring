@@ -123,7 +123,9 @@ public class CustomLoggingInterceptor implements ContainerRequestFilter, Contain
         apiLogRequest.setDateTime(new Date());
         apiLogRequest.setPath(requestContext.getUriInfo().getPath());
         apiLogRequest.setMethod(requestContext.getMethod());
-        apiLogRequest.setMediaType(requestContext.getMediaType().toString());
+        if (requestContext.getMediaType() != null) {
+            apiLogRequest.setMediaType(requestContext.getMediaType().toString());
+        }
 
         // Headers
         if (!CollectionUtils.isEmpty(requestContext.getHeaders())) {
@@ -213,7 +215,9 @@ public class CustomLoggingInterceptor implements ContainerRequestFilter, Contain
         ApiLogResponse apiLogResponse = new ApiLogResponse();
 
         apiLogResponse.setDateTime(new Date());
-        apiLogResponse.setMediaType(responseContext.getMediaType().toString());
+        if (responseContext.getMediaType() != null) {
+            apiLogResponse.setMediaType(responseContext.getMediaType().toString());
+        }
         apiLogResponse.setHttpStatusCode(responseContext.getStatus());
 
         Map<String, String> headers = new HashMap<>();
