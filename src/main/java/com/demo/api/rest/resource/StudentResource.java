@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -43,7 +44,7 @@ public class StudentResource extends ApiResource {
     private StudentService studentService;
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @GZip
     @Log
     @ApiOperation(value = "Get students",
@@ -52,17 +53,16 @@ public class StudentResource extends ApiResource {
             responseContainer = "List"
     )
     @ApiResponses(value = { @ApiResponse(code = 500, message = "Internal server error") })
-    public Response getStudents() {
+    public List<Student> getStudents() {
 
         Collection<Student> students = studentService.getStudents();
 
-		return Response.ok(students)
-				.build();
+		return (List) students;
     }
 
     @GET
     @Path("/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @CacheControlMaxAge(time = 60, unit = TimeUnit.SECONDS)
     @Log
     @ApiOperation(value = "Get student by id",
@@ -71,7 +71,7 @@ public class StudentResource extends ApiResource {
     )
     @ApiResponses(value = {@ApiResponse(code = 500, message = "Internal server error")
             , @ApiResponse(code = 404, message = "Student not found")})
-    public Response getStudent(@ApiParam(value = "Student id", required = true) @PathParam("id") String id) {
+    public Student getStudent(@ApiParam(value = "Student id", required = true) @PathParam("id") String id) {
 
         Student student = studentService.getStudentById(id);
 
@@ -79,13 +79,12 @@ public class StudentResource extends ApiResource {
             throw new NotFoundException();
         }
 
-		return Response.ok(student)
-				.build();
+		return student;
     }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Log
     @CacheControlNoCache
     @ApiOperation(value = "Create a new student",
@@ -103,20 +102,10 @@ public class StudentResource extends ApiResource {
 		return Response.created(entityURI).entity(student).build();
     }
 
-	public static URI getEntityURI(@NotNull @Valid String studentId, boolean withApiBasePath) {
-		String path = STUDENT_BASE_RESOURCE_PATH + STUDENT_BY_ID_RESOURCE_PATH.replace("{id}", studentId);
-		
-		if (withApiBasePath) {
-			path = API_BASE_PATH + path;
-		}
-		
-		return URI.create(path);
-	}
-
     @PUT
     @Path(STUDENT_BY_ID_RESOURCE_PATH)
     @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Log
     @CacheControlNoCache
     @ApiOperation(value = "Updates a student",
@@ -126,7 +115,7 @@ public class StudentResource extends ApiResource {
     @ApiResponses(value = {@ApiResponse(code = 500, message = "Internal server error")
             , @ApiResponse(code = 400, message = "Invalid student received")
             , @ApiResponse(code = 404, message = "Student not found")})
-    public Response updateStudent(@ApiParam(value = "Student id", required = true) @NotNull @PathParam("id") String id, @ApiParam(value = "Student information", required = true) @NotNull @Valid Student student) throws AppException {
+    public Student updateStudent(@ApiParam(value = "Student id", required = true) @NotNull @PathParam("id") String id, @ApiParam(value = "Student information", required = true) @NotNull @Valid Student student) throws AppException {
 
         Student existingStudent = studentService.getStudentById(id);
 
@@ -140,7 +129,17 @@ public class StudentResource extends ApiResource {
             studentService.updateStudent(student);
         }
 
-        return Response.ok(student).build();
+        return student;
+    }
+
+    public static URI getEntityURI(@NotNull @Valid String studentId, boolean withApiBasePath) {
+        String path = STUDENT_BASE_RESOURCE_PATH + STUDENT_BY_ID_RESOURCE_PATH.replace("{id}", studentId);
+
+        if (withApiBasePath) {
+            path = API_BASE_PATH + path;
+        }
+
+        return URI.create(path);
     }
 
 }

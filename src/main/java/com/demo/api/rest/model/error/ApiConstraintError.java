@@ -1,11 +1,13 @@
 package com.demo.api.rest.model.error;
 
-
 public class ApiConstraintError {
 
     private String item;
 
     private String message;
+
+    public ApiConstraintError() {
+    }
 
     public ApiConstraintError(String item, String message) {
         this.item = item;

@@ -265,6 +265,35 @@
                 </configuration>
             </plugin>
 
+            <!--
+            Generate schema from model classes (if you want)
+            Usage: mvn clean jaxb2:schemagen
+
+            More Info: http://www.mojohaus.org/jaxb2-maven-plugin/Documentation/v2.2/schemagen-mojo.html
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <id>schemagen</id>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <locale>en_EN</locale>
+                    <sources>
+                        <source>src/main/java/com/demo/api/rest/model/Student.java</source>
+                        <source>src/main/java/com/demo/api/rest/model/error/</source>
+                    </sources>
+                    <outputDirectory>src/main/resources/model-schema</outputDirectory>
+                    <generateEpisode>true</generateEpisode>
+                </configuration>
+            </plugin>
+
             <!-- swagger.json generator. Usage: mvn compile swagger:generate -->
             <plugin>
                 <groupId>com.github.kongchen</groupId>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+
+  <xs:element name="apiErrorMessage" type="apiErrorMessage"/>
+
+  <xs:element name="student" type="student"/>
+
+  <xs:complexType name="student">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="xs:string"/>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+      <xs:element minOccurs="0" name="age" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="apiConstraintError">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="item" type="xs:string"/>
+      <xs:element minOccurs="0" name="message" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="apiErrorMessage">
+    <xs:sequence>
+      <xs:element name="code" type="xs:int">
+        <xs:annotation>
+          <xs:documentation><![CDATA[application specific error code]]></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="constraintErrors" nillable="true" type="apiConstraintError">
+        <xs:annotation>
+          <xs:documentation><![CDATA[more info about the error]]></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="developerMessage" type="xs:string">
+        <xs:annotation>
+          <xs:documentation><![CDATA[extra information that might useful for developers]]></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="message" type="xs:string">
+        <xs:annotation>
+          <xs:documentation><![CDATA[message describing the error]]></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="status" type="xs:int">
+        <xs:annotation>
+          <xs:documentation><![CDATA[contains the same HTTP Status code returned by the server]]></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

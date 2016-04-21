@@ -3,9 +3,11 @@ package com.demo.api.rest.model.error;
 import com.demo.api.rest.error.AppErrorCatalog;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ApiErrorMessage {
 
